@@ -24,8 +24,13 @@ export class StudentList {
 
   constructor(private studentService: Student) {
     this.studentService.getStudents().subscribe({
-      next: (data) => { this.students = data; this.loading = false; this.cdr.markForCheck();},
-      error: () => { this.errorMessage = "Could not load students."; this.cdr.markForCheck();}
+      next: (data) => { 
+        this.students = data; 
+        this.loading = false; 
+        this.cdr.markForCheck();},
+      error: () => { 
+        this.errorMessage = "Could not load students."; 
+        this.cdr.markForCheck();}
     });
   }
 
