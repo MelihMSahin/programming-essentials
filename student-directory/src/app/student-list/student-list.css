@@ -1,0 +1,67 @@
+.student-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    justify-self: center;
+}
+
+.page-header {
+    text-align: center;
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.subtitle {
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    color: #6b7280;
+}
+
+.search-menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+
+.search-menu button {
+    background: #3b95f6;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: background 0.2s ease;
+    width: 140px;
+}
+
+.search-menu button:hover {
+    background: #2563eb;
+    border: 2px solid #1f2937;
+}
+
+.search-menu input {
+    width: 300px;
+    padding: 0.75rem 1rem;
+    border: 2px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.search-menu input:focus {
+    border-color: #3b82f6;
+}
+

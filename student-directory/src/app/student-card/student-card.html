@@ -1,0 +1,12 @@
+<a class="student-card" [routerLink]="['/student', id]">
+  <div class="avatar">{{ initial }}</div>
+
+  <div class="info">
+    <h2>{{ name }}</h2>
+
+    @if (showDetails) {
+      <span class="score-badge" [class]="scoreClass">
+        {{ score }} </span>
+    }
+  </div>
+</a>
