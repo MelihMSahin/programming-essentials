@@ -20,6 +20,7 @@
     }
     
     <input [(ngModel)]="searchTerm">
+
 </div>
 
 <div class="student-container">
@@ -29,5 +30,19 @@
         [name] = "student.name"
         [score] = "student.score"
         [showDetails] = "showDetails"
-    ></app-student-card>
-} </div>
+    ></app-student-card>}
+    <button class="add-student-pill" type="button" (click)="showAddStudent = true">
+        <span class="add-icon">+</span>
+        <span>Add New Student</span>
+    </button>
+</div>
+
+@if (showAddStudent) {
+    <div class="modal-backdrop" (click)="showAddStudent = false">
+        <section class="add-student-modal" role="dialog" aria-modal="true" aria-labelledby="add-student-title" (click)="$event.stopPropagation()">
+            <button class="close-button" type="button" aria-label="Close" (click)="showAddStudent = false">&times;</button>
+            <h2 id="add-student-title">Add New Student</h2>
+            <app-add-student (studentAdded)="addStudent($event)"></app-add-student>
+        </section>
+    </div>
+}

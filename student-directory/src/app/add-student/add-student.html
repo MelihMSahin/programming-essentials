@@ -1,0 +1,14 @@
+<form #addStudentForm="ngForm" (ngSubmit)="onSubmit()">
+  <label for="student-name">Name</label>
+  <input id="student-name" name="name" [(ngModel)]="studentName" required #nameField="ngModel" />
+  @if (nameField.invalid && nameField.touched) {
+    <p>Name is required.</p>
+  }
+  <label for="student-score">Score</label>
+  <input id="student-score" type="number" name="score" [(ngModel)]="studentScore" required min="0" max="100" #scoreField="ngModel" />
+  @if (scoreField.invalid && scoreField.touched) {
+    <p>Score is required.</p>
+  }
+  <button type="submit" [disabled]="addStudentForm.invalid">Add Student</button>
+</form>
+ 

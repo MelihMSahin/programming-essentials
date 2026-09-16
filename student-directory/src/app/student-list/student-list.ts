@@ -1,12 +1,12 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { StudentCard } from '../student-card/student-card';
 import { Student } from '../student';
+import { AddStudent } from '../add-student/add-student';
 
 
 @Component({
-  imports: [FormsModule, StudentCard],//, RouterLink, StudentCard],
+  imports: [FormsModule, StudentCard, AddStudent],
   selector: 'app-student-list',
   standalone: true,
   styleUrl: './student-list.css',
@@ -17,6 +17,7 @@ export class StudentList {
   private cdr = inject(ChangeDetectorRef);
 
   showDetails = false;
+  showAddStudent = false;
   searchTerm = '';
 
   loading:boolean = false;
@@ -36,6 +37,13 @@ export class StudentList {
 
   toggleDetails() {
     this.showDetails = !this.showDetails;
+  }
+
+  //explain function
+  addStudent(student: { name: string; score: number }) {
+    const nextId = Math.max(...this.students.map((existingStudent) => existingStudent.id), 0) + 1;
+    this.students = [...this.students, { ...student, id: nextId }];
+    this.showAddStudent = false;
   }
 
   get filteredStudents() {
