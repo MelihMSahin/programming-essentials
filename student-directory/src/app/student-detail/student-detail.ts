@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Student } from '../student';
 
@@ -12,6 +12,7 @@ import { Student } from '../student';
 export class StudentDetail {
   private route = inject(ActivatedRoute);
   private studentService = inject(Student);
+  private cdr = inject(ChangeDetectorRef);
 
   student: { id: number; name: string; score: number } | undefined;
   loading = true;
@@ -23,11 +24,13 @@ export class StudentDetail {
       next: (data) => {
         this.student = data;
         this.loading = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.errorMessage = 'Could not load that student.';
         this.loading = false;
         console.error(err);
+        this.cdr.markForCheck();
       },
     });
   }
