@@ -2,14 +2,14 @@ import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 export interface Meal{
-  idMeal: number,
-  strMeal?: string,
-  strCategory?: string,
-  strArea?: string,
-  strInstructions?: string,
-  strMealThumb?: string,
-  strYoutube?: string,
-  strImageSource?: string,
+  id: number,
+  name?: string,
+  category?: string,
+  location?: string,
+  instructions?: string,
+  thumbmail?: string,
+  youtubeURL?: string,
+  imageURL?: string,
 }
 
 @Component({
