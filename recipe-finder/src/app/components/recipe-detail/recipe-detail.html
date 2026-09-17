@@ -1,0 +1,41 @@
+<div class="recipe-page">
+    @if (loading) {
+        <p>Loading recipe...</p>
+    } @else if (errorMessage) {
+        <p>{{ errorMessage }}</p>
+    } @else if (meal) {
+        <h1>{{ meal.name }}</h1>
+        <p>{{ meal.category }}</p>
+        <p>{{ meal.location }}</p>
+        <p>{{ meal.instructions }}</p>
+
+        <h2>Personal notes</h2>
+        <form #noteForm="ngForm" (ngSubmit)="addNote()">
+            <label for="noteText">Add a note</label>
+
+            <textarea
+                id="noteText"
+                name="noteText"
+                [(ngModel)]="noteText"
+                required
+                rows="4"
+            ></textarea>
+
+            <button type="submit" [disabled]="noteForm.invalid">
+                Add note
+            </button>
+        </form>
+
+        @if (notes.length > 0) {
+            <h2>Your notes</h2>
+
+            <ul>
+                @for (note of notes; track $index) {
+                <li>{{ note }}</li>
+                }
+            </ul>
+        }
+    } @else {
+        <p>Recipe not found.</p>
+    }
+</div>

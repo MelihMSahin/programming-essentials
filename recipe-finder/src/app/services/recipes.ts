@@ -1,4 +1,4 @@
-import { Service, Injectable, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
@@ -28,9 +28,10 @@ export interface Meal{
 export class Recipes {
     private http = inject(HttpClient);
     private apiUrl = 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
-
-    getMeals(): Observable<Meal[]> {
-        return this.http.get<MealResponse>(this.apiUrl).pipe(
+    private lookupUrl = 'https://www.themealdb.com/api/json/v1/1/lookup.php?i=';
+    
+    getMeals(searchTerm: string): Observable<Meal[]> {
+        return this.http.get<MealResponse>(this.apiUrl + searchTerm).pipe(
         map(response => response.meals.map(meal => ({
             id: meal.idMeal,
             name: meal.strMeal,
@@ -39,6 +40,26 @@ export class Recipes {
             instructions: meal.strInstructions,
             thumbnail: meal.strMealThumb,
             }))
-        )
-    )};
+        ))
+    };
+
+    getMealById(id: string): Observable<Meal | undefined> {
+        return this.http.get<MealResponse>(this.lookupUrl + id).pipe(
+        map(response => {
+            const meal = response.meals?.[0];
+
+            if (!meal) {
+                return undefined;
+            }
+
+            return {
+                id: meal.idMeal,
+                name: meal.strMeal,
+                category: meal.strCategory,
+                location: meal.strArea,
+                instructions: meal.strInstructions,
+                thumbnail: meal.strMealThumb,
+            };
+        })
+    );}
 }

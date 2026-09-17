@@ -1,1 +1,44 @@
 /* You can add global styles to this file, and also import other style files */
+/* Light theme (default) */
+:root {
+    --bg: #f8faf8;
+    --surface: #ffffff;
+    --text: #2f332f;
+
+    --primary: #4f8a4c;
+    --primary-hover: #3f713d;
+
+    --accent: #7fd3d6;
+
+    --border: #d8e2d8;
+
+    --shadow: rgba(0, 0, 0, 0.08);
+}
+
+/* Dark theme */
+.dark-theme {
+    --bg: #1f1b18;
+    --surface: #2a2420;
+    --text: #f4f4f1;
+
+    --primary: #68a865;
+    --primary-hover: #5a9557;
+
+    --accent: #65c8d0;
+
+    --border: #4c4037;
+
+    --shadow: rgba(0, 0, 0, 0.3);
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+}
+
+* {
+    box-sizing: border-box;
+}
