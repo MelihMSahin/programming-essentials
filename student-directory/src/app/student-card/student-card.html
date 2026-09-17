@@ -1,12 +1,15 @@
-<a class="student-card" [routerLink]="['/student', id]">
+<article class="student-card">
   <div class="avatar">{{ initial }}</div>
 
-  <div class="info">
+  <a class="info" [routerLink]="['/student', id]">
     <h2>{{ name }}</h2>
 
     @if (showDetails) {
       <span class="score-badge" [class]="scoreClass">
         {{ score }} </span>
     }
-  </div>
-</a>
+  </a>
+
+  <button type="button" (click)="requestDelete()">Delete</button>
+  <button type="button" (click)="requestEdit()">Edit</button>
+</article>

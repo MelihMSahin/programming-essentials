@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -13,6 +13,16 @@ export class StudentCard {
   @Input() name!: string;
   @Input() score!: number;
   @Input() showDetails = false;
+  @Output() deleteRequested = new EventEmitter<void>();
+  @Output() editRequested = new EventEmitter<void>();
+
+  requestDelete() {
+    this.deleteRequested.emit();
+  }
+
+  requestEdit() {
+    this.editRequested.emit();
+  }
 
   get scoreClass(): "score-high" | "score-mid" | "score-low" {
     if (this.score > 80) { return "score-high"; }

@@ -14,12 +14,14 @@ import { AddStudent } from '../add-student/add-student';
 })
 export class StudentList {
   students: { id: number; name: string; score: number }[] = [];
-  private cdr = inject(ChangeDetectorRef);
+  favoriteIds: number[] = [];
 
   showDetails = false;
   showAddStudent = false;
+  editingStudent: { id: number; name: string; score: number } | null = null;
   searchTerm = '';
 
+  private cdr = inject(ChangeDetectorRef);
   loading:boolean = false;
   errorMessage:String = "";
 
@@ -44,6 +46,16 @@ export class StudentList {
     const nextId = Math.max(...this.students.map((existingStudent) => existingStudent.id), 0) + 1;
     this.students = [...this.students, { ...student, id: nextId }];
     this.showAddStudent = false;
+  }
+
+  deleteStudent(id: number) {
+    this.students = this.students.filter(
+      student => student.id !== id
+    );
+  }
+
+  startEditing(student: { id: number; name: string; score: number }) {
+    this.editingStudent = student;
   }
 
   get filteredStudents() {

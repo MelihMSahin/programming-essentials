@@ -30,6 +30,8 @@
         [name] = "student.name"
         [score] = "student.score"
         [showDetails] = "showDetails"
+        (deleteRequested)="deleteStudent(student.id)"
+        (editRequested)="startEditing(student)"
     ></app-student-card>}
     <button class="add-student-pill" type="button" (click)="showAddStudent = true">
         <span class="add-icon">+</span>
