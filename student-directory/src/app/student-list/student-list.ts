@@ -18,7 +18,6 @@ export class StudentList {
 
   showDetails = false;
   showAddStudent = false;
-  editingStudent: { id: number; name: string; score: number } | null = null;
   searchTerm = '';
   showOnlyFavorites = false;
 
@@ -66,10 +65,6 @@ export class StudentList {
     this.students = this.students.filter(
       student => student.id !== id
     );
-  }
-
-  startEditing(student: { id: number; name: string; score: number }) {
-    this.editingStudent = student;
   }
 
   get filteredStudents() {

@@ -36,7 +36,6 @@
         [isFavorite]="favoriteIds.includes(student.id)"
         (favoriteToggled)="toggleFavorite(student.id)"
         (deleteRequested)="deleteStudent(student.id)"
-        (editRequested)="startEditing(student)"
     ></app-student-card>}
     <button class="add-student-pill" type="button" (click)="showAddStudent = true">
         <span class="add-icon">+</span>

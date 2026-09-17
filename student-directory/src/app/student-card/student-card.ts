@@ -15,7 +15,6 @@ export class StudentCard {
   @Input() showDetails = false;
   @Input() isFavorite = false;
   @Output() deleteRequested = new EventEmitter<void>();
-  @Output() editRequested = new EventEmitter<void>();
   @Output() favoriteToggled = new EventEmitter<void>();
 
   toggleFavorite() {
@@ -24,10 +23,6 @@ export class StudentCard {
 
   requestDelete() {
     this.deleteRequested.emit();
-  }
-
-  requestEdit() {
-    this.editRequested.emit();
   }
 
   get scoreClass(): "score-high" | "score-mid" | "score-low" {
