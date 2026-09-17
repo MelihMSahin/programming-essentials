@@ -1,0 +1,38 @@
+<main>
+    <h1>Recipe Finder</h1>
+
+    <form (ngSubmit)="searchMeals()">
+        <label for="searchTerm">Search for a recipe</label>
+        <input
+            id="searchTerm"
+            name="searchTerm"
+            type="search"
+            [(ngModel)]="searchTerm"
+            placeholder="Try chicken, pasta, or curry"
+        />
+        <button type="submit">Search</button>
+    </form>
+
+    @if (loading) {
+        <p>Loading recipes...</p>
+    } @else if (errorMessage) {
+        <p role="alert">{{ errorMessage }}</p>
+    } @else {
+        <p>{{ meals.length }} recipes found</p>
+        <ul>
+            @for (meal of meals; track meal.id) {
+                <li>
+                    <a [routerLink]="['/recipe', meal.id]">
+                    @if (meal.thumbnail) {
+                        <img [src]="meal.thumbnail" [alt]="meal.name" />
+                    }
+                    <h2>{{ meal.name }}</h2>
+                    <p>{{ meal.category }} · {{ meal.location }}</p>
+                    </a>
+                </li>
+            } @empty {
+                <li>No recipes found.</li>
+            }
+        </ul>
+    }
+</main>
