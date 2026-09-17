@@ -13,8 +13,14 @@ export class StudentCard {
   @Input() name!: string;
   @Input() score!: number;
   @Input() showDetails = false;
+  @Input() isFavorite = false;
   @Output() deleteRequested = new EventEmitter<void>();
   @Output() editRequested = new EventEmitter<void>();
+  @Output() favoriteToggled = new EventEmitter<void>();
+
+  toggleFavorite() {
+    this.favoriteToggled.emit();
+  }
 
   requestDelete() {
     this.deleteRequested.emit();

@@ -12,11 +12,14 @@
 </header>
 
 <div class="search-menu">
+    <button type="button" (click)="toggleFavoriteFilter()">
+        {{ showOnlyFavorites ? 'Show All Students' : 'Show Favourites' }}
+    </button>
     @if (showDetails) {
-    <button (click)="toggleDetails()">Show Details</button>
+        <button (click)="toggleDetails()">Show Details</button>
     }
     @if (!showDetails) {
-    <button (click)="toggleDetails()">Hide Details</button>
+        <button (click)="toggleDetails()">Hide Details</button>
     }
     
     <input [(ngModel)]="searchTerm">
@@ -30,6 +33,8 @@
         [name] = "student.name"
         [score] = "student.score"
         [showDetails] = "showDetails"
+        [isFavorite]="favoriteIds.includes(student.id)"
+        (favoriteToggled)="toggleFavorite(student.id)"
         (deleteRequested)="deleteStudent(student.id)"
         (editRequested)="startEditing(student)"
     ></app-student-card>}

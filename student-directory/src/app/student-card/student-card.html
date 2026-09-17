@@ -10,6 +10,9 @@
     }
   </a>
 
-  <button type="button" (click)="requestDelete()">Delete</button>
+  <button type="button" (click)="toggleFavorite()">
+    {{ isFavorite ? 'Unfavourite' : 'Favourite' }}
+  </button>
   <button type="button" (click)="requestEdit()">Edit</button>
+  <button type="button" (click)="requestDelete()">Delete</button>
 </article>

@@ -20,6 +20,7 @@ export class StudentList {
   showAddStudent = false;
   editingStudent: { id: number; name: string; score: number } | null = null;
   searchTerm = '';
+  showOnlyFavorites = false;
 
   private cdr = inject(ChangeDetectorRef);
   loading:boolean = false;
@@ -41,11 +42,24 @@ export class StudentList {
     this.showDetails = !this.showDetails;
   }
 
-  //explain function
   addStudent(student: { name: string; score: number }) {
     const nextId = Math.max(...this.students.map((existingStudent) => existingStudent.id), 0) + 1;
     this.students = [...this.students, { ...student, id: nextId }];
     this.showAddStudent = false;
+  }
+
+  toggleFavoriteFilter() {
+    this.showOnlyFavorites = !this.showOnlyFavorites;
+  }
+
+  toggleFavorite(id: number) {
+    if (this.favoriteIds.includes(id)) {
+      this.favoriteIds = this.favoriteIds.filter(
+        favoriteId => favoriteId !== id
+      );
+    } else {
+      this.favoriteIds = [...this.favoriteIds, id];
+    }
   }
 
   deleteStudent(id: number) {
@@ -59,9 +73,15 @@ export class StudentList {
   }
 
   get filteredStudents() {
-    return this.students.filter((student) =>
-      student.name.toLowerCase().includes(this.searchTerm.toLowerCase())
-    );
+    const search = this.searchTerm.toLowerCase();
+
+    return this.students.filter((student) => {
+      const matchesSearch = student.name.toLowerCase().includes(search);
+      const matchesFavorite =
+        !this.showOnlyFavorites || this.favoriteIds.includes(student.id);
+
+      return matchesSearch && matchesFavorite;
+    });
   }
 }
  
