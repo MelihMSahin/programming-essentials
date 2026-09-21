@@ -1,15 +1,15 @@
 public class Student {
-    private int _x;
+    private int score;
     
     public string Name { get; set; }
-    public int X
+    public int Score
     {
-        get { return _x; }
+        get { return score; }
         set
         {
             if (value < 0 || value > 100)
-                throw new ArgumentOutOfRangeException(nameof(value), "x must be 0-100");
-            _x = value;
+                throw new ArgumentOutOfRangeException(nameof(value), "score must be 0-100");
+            score = value;
         }
     }
 
