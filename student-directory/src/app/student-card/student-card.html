@@ -10,8 +10,16 @@
     }
   </a>
 
-  <button type="button" (click)="toggleFavorite()">
-    {{ isFavorite ? 'Unfavourite' : 'Favourite' }}
+  <button
+    class="favorite-button"
+    [class.is-favorite]="isFavorite"
+    type="button"
+    [attr.aria-label]="isFavorite ? 'Unfavourite' : 'Favourite'"
+    (click)="toggleFavorite()"
+  >
+    <span class="button-icon" aria-hidden="true">&#9825;</span>
   </button>
-  <button type="button" (click)="requestDelete()">Delete</button>
+  <button class="delete-button" type="button" aria-label="Delete" (click)="requestDelete()">
+    <span class="button-icon" aria-hidden="true">&#128465;&#65038;</span>
+  </button>
 </article>

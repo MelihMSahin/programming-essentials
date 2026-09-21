@@ -113,7 +113,6 @@
     font-size: 0.95rem;
     font-weight: 600;
     transition: background 0.2s ease;
-    width: 140px;
 }
 
 .search-menu button:hover {
