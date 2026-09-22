@@ -20,3 +20,15 @@ else
 {
     Console.WriteLine("Score Invalid");
 }
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Angular Clietn"), policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    };
+});
+
+app.UseCors("Angular Client");
