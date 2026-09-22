@@ -62,9 +62,7 @@ namespace StudentApi.Controllers
             var student = students.FirstOrDefault(s => s.Id == id);
 
             if (student == null) 
-            {
                 return NotFound();
-            }
 
             return Ok(student);
         }
