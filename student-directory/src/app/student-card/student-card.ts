@@ -9,7 +9,7 @@ import { RouterLink } from '@angular/router';
 })
 
 export class StudentCard {
-  @Input() id!: number;
+  @Input() id!: string;
   @Input() name!: string;
   @Input() score!: number;
   @Input() showDetails = false;

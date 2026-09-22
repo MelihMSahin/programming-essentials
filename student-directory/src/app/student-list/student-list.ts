@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { StudentCard } from '../student-card/student-card';
-import { Student } from '../student';
 import { AddStudent } from '../add-student/add-student';
+import { Student, StudentRecord, StudentRequest } from '../student';
 
 
 @Component({
@@ -13,8 +13,8 @@ import { AddStudent } from '../add-student/add-student';
   templateUrl: './student-list.html',
 })
 export class StudentList {
-  students: { id: number; name: string; score: number }[] = [];
-  favoriteIds: number[] = [];
+  students: StudentRecord[] = [];
+  favoriteIds: string[] = [];
 
   showDetails = false;
   showAddStudent = false;
@@ -41,17 +41,24 @@ export class StudentList {
     this.showDetails = !this.showDetails;
   }
 
-  addStudent(student: { name: string; score: number }) {
-    const nextId = Math.max(...this.students.map((existingStudent) => existingStudent.id), 0) + 1;
-    this.students = [...this.students, { ...student, id: nextId }];
-    this.showAddStudent = false;
+  addStudent(student: StudentRequest) {
+    this.studentService.createStudent(student).subscribe({
+      next: (createdStudent) => {
+        this.students = [...this.students, createdStudent];
+        this.showAddStudent = false;
+      },
+      error: (error) => {
+        this.errorMessage = 'Could not add student.';
+        console.error(error);
+      }
+    });
   }
 
   toggleFavoriteFilter() {
     this.showOnlyFavorites = !this.showOnlyFavorites;
   }
 
-  toggleFavorite(id: number) {
+  toggleFavorite(id: string) {
     if (this.favoriteIds.includes(id)) {
       this.favoriteIds = this.favoriteIds.filter(
         favoriteId => favoriteId !== id
@@ -61,10 +68,18 @@ export class StudentList {
     }
   }
 
-  deleteStudent(id: number) {
-    this.students = this.students.filter(
-      student => student.id !== id
-    );
+  deleteStudent(id: string) {
+    this.studentService.deleteStudent(id).subscribe({
+      next: () => {
+        this.students = this.students.filter(
+          student => student.id !== id
+        );
+      },
+      error: (error) => {
+        this.errorMessage = 'Could not delete student.';
+        console.error(error);
+      }
+    });
   }
 
   get filteredStudents() {

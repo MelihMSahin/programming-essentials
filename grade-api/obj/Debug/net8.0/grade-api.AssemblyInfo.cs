@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("grade-api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4ee5a6764e0ca30d21fc3ec323d4b7303ffd6598")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b304f7b5dd4f25d123ba51bef5185b06d7affd1e")]
 [assembly: System.Reflection.AssemblyProductAttribute("grade-api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("grade-api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
