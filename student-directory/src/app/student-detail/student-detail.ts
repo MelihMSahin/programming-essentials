@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Student } from '../student';
+import { Student, StudentRecord } from '../student';
 
 @Component({
   imports: [],
@@ -14,12 +14,18 @@ export class StudentDetail {
   private studentService = inject(Student);
   private cdr = inject(ChangeDetectorRef);
 
-  student: { id: number; name: string; score: number } | undefined;
+  student: StudentRecord | undefined;
   loading = true;
   errorMessage = '';
 
   constructor() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id) {
+      this.errorMessage = 'That student ID is missing.';
+      this.loading = false;
+      return;
+    }
+
     this.studentService.getStudentById(id).subscribe({
       next: (data) => {
         this.student = data;

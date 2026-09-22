@@ -1,35 +1,37 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-interface ApiUser {
-  id: number;
+export interface StudentRecord {
+  id: string;
   name: string;
+  score: number;
+}
+
+export interface StudentRequest {
+  name: string;
+  score: number;
 }
 
 @Injectable({ providedIn: 'root' })
 export class Student {
     private http = inject(HttpClient);
-    private apiUrl = 'https://jsonplaceholder.typicode.com/users';
+    //private apiUrl = 'https://jsonplaceholder.typicode.com/users';
+    private apiUrl = 'http://localhost:5202/api/Students';
 
-    getStudents(): Observable<{ id: number; name: string; score: number }[]> {
-        return this.http.get<ApiUser[]>(this.apiUrl).pipe(
-        map((users) =>
-            users.map((user) => ({
-            id: user.id,
-            name: user.name,
-            // the mock API has no score field, so we fake one
-            score: Math.floor(Math.random() * 41) + 60,
-            }))
-        )
-    )};
+    getStudents(): Observable<StudentRecord[]> {
+        return this.http.get<StudentRecord[]>(this.apiUrl);
+    }
 
-    getStudentById(id: number) {
-        return this.http.get<ApiUser>(`${this.apiUrl}/${id}`).pipe(
-        map((user) => ({
-            id: user.id,
-            name: user.name,
-            score: Math.floor(Math.random() * 41) + 60,
-        })));
+    getStudentById(id: string): Observable<StudentRecord> {
+        return this.http.get<StudentRecord>(`${this.apiUrl}/${id}`);
+    }
+
+    createStudent(student: StudentRequest): Observable<StudentRecord> {
+      return this.http.post<StudentRecord>(this.apiUrl, student);
+    }
+
+    deleteStudent(id: string): Observable<void> {
+      return this.http.delete<void>(`${this.apiUrl}/${id}`);
     }
 }
