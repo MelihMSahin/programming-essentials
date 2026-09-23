@@ -7,4 +7,6 @@ public class StudentDto
 
     [Range(0, 100)]
     public int Score { get; set; }
+
+    public string? CourseId { get; set; }
 }

@@ -1,23 +1,36 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 public class Student
 {
     public string Id { get; private set; }
     public string Name { get; set; } = string.Empty;
     public int Score { get; set; }
+    public bool IsFav { get; set; }
+    public string? CourseId { get; set; }
 
-    public Student(string id, string name, int score)
+    [JsonIgnore]
+    public Course? Course { get; set; }
+    public string? CourseName => Course?.Name;
+
+    public Student(string id, string name, int score, string? courseId = null)
     {
         Id = id;
         Name = name;
         Score = score;
+        CourseId = courseId;
     }
 }
 
 public class UpdateScoreRequest
 {
     public int Score { get; set; }
+}
+
+public class UpdateFavoriteRequest
+{
+    public bool IsFav { get; set; }
 }
 
 namespace StudentApi.Controllers
@@ -51,9 +64,46 @@ namespace StudentApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Student>>> GetAll()
+        public async Task<ActionResult<List<Student>>> GetAll(
+            [FromQuery] string? courseId,
+            [FromQuery] string? search,
+            [FromQuery] int? minScore,
+            [FromQuery] int? maxScore,
+            [FromQuery] string? sortBy,
+            [FromQuery] string? sortDirection)
         {
-            var students = await _context.Students.ToListAsync();
+            var query = _context.Students
+                .Include(student => student.Course)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(courseId))
+                query = query.Where(student => student.CourseId == courseId);
+
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(student => student.Name.Contains(search));
+
+            if (minScore.HasValue)
+                query = query.Where(student => student.Score >= minScore.Value);
+
+            if (maxScore.HasValue)
+                query = query.Where(student => student.Score <= maxScore.Value);
+
+            var descending = string.Equals(sortDirection, "desc", StringComparison.OrdinalIgnoreCase);
+            query = sortBy?.ToLowerInvariant() switch
+            {
+                "course" => descending
+                    ? query.OrderByDescending(student => student.Course!.Name)
+                    : query.OrderBy(student => student.Course!.Name),
+                "score" => descending
+                    ? query.OrderByDescending(student => student.Score)
+                    : query.OrderBy(student => student.Score),
+                "name" => descending
+                    ? query.OrderByDescending(student => student.Name)
+                    : query.OrderBy(student => student.Name),
+                _ => query.OrderBy(student => student.Name)
+            };
+
+            var students = await query.ToListAsync();
             return Ok(students);
         }
 
@@ -61,7 +111,9 @@ namespace StudentApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Student>> GetById(string id)
         {
-            var student = await _context.Students.FindAsync(id);
+            var student = await _context.Students
+                .Include(item => item.Course)
+                .FirstOrDefaultAsync(item => item.Id == id);
             if (student == null) return NotFound();
             return Ok(student);
         }
@@ -76,7 +128,7 @@ namespace StudentApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var student = new Student(await GenerateUniqueId(), request.Name, request.Score);
+            var student = new Student(await GenerateUniqueId(), request.Name, request.Score, request.CourseId);
             
             _context.Students.Add(student);
             await _context.SaveChangesAsync();
@@ -102,6 +154,7 @@ namespace StudentApi.Controllers
 
             student.Name = updated.Name;
             student.Score = updated.Score;
+            student.CourseId = updated.CourseId;
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -119,6 +172,20 @@ namespace StudentApi.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpPatch("{id}/favorite")]
+        public async Task<IActionResult> UpdateFavorite(string id, UpdateFavoriteRequest request)
+        {
+            var student = await _context.Students.FindAsync(id);
+
+            if (student == null)
+                return NotFound();
+
+            student.IsFav = request.IsFav;
+            await _context.SaveChangesAsync();
+
+            return Ok(student);
         }
 
         [HttpDelete("{id}")]
