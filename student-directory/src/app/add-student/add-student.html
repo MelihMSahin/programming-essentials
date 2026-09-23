@@ -13,6 +13,14 @@
     <p>Score is required</p>
   }
 
+  <label for="student-course">Course</label>
+  <select id="student-course" formControlName="courseId">
+    <option value="">No course</option>
+    @for (course of courses; track course.id) {
+      <option [value]="course.id">{{ course.name }}</option>
+    }
+  </select>
+
   <button type="submit" [disabled]="addStudentForm.invalid">Add Student</button>
 </form>
  

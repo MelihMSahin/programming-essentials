@@ -1,0 +1,40 @@
+.course-page {
+  max-width: 720px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+form, li {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+form {
+  margin: 1.5rem 0;
+}
+
+input {
+  flex: 1;
+  padding: 0.6rem;
+}
+
+button {
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+li {
+  justify-content: space-between;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.error {
+  color: #b42318;
+}
