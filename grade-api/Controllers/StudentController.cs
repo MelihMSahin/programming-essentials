@@ -37,17 +37,7 @@ namespace StudentApi.Controllers
 
         private static readonly Random random = new();
 
-        private static readonly List<Student> students = new();
-
-        static StudentsController()
-        {
-            students.Add(new Student(GenerateUniqueId(), "Example Student", 50));
-            students.Add(new Student(GenerateUniqueId(), "Alice", 85));
-            students.Add(new Student(GenerateUniqueId(), "Bob", 72));
-            students.Add(new Student(GenerateUniqueId(), "Cali", 91));
-        }
-
-        private static string GenerateUniqueId()
+        private async Task<string> GenerateUniqueId()
         {
             string id;
 
@@ -55,7 +45,7 @@ namespace StudentApi.Controllers
             {
                 id = random.Next(1, 100).ToString(); 
             }
-            while (students.Any(s => s.Id == id));
+            while (await _context.Students.FindAsync(id) != null);
 
             return id;
         }
@@ -78,16 +68,18 @@ namespace StudentApi.Controllers
  
 
         [HttpPost]
-        public ActionResult<Student> Create(StudentDto request)
+        public async Task<ActionResult<Student>> Create(StudentDto request)
         {
+            
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var student = new Student(GenerateUniqueId(), request.Name, request.Score);
-
-            students.Add(student);
+            var student = new Student(await GenerateUniqueId(), request.Name, request.Score);
+            
+            _context.Students.Add(student);
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction(
                 nameof(GetById),
@@ -96,46 +88,49 @@ namespace StudentApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(string id, StudentDto updated)
+        public async Task<IActionResult> Update(string id, StudentDto updated)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var student = students.FirstOrDefault(s => s.Id == id);
+            var student = await _context.Students.FindAsync(id);
 
             if (student == null)
                 return NotFound();
 
             student.Name = updated.Name;
             student.Score = updated.Score;
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
         [HttpPatch("{id}/score")]
-        public IActionResult UpdateScore(string id, UpdateScoreRequest request)
+        public async Task<IActionResult> UpdateScore(string id, UpdateScoreRequest request)
         {
-            var student = students.FirstOrDefault(s => s.Id == id);
+            var student = await _context.Students.FindAsync(id);
 
             if (student == null)
                 return NotFound();
 
             student.Score = request.Score;
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
-            var student = students.FirstOrDefault(s => s.Id == id);
+            var student = await _context.Students.FindAsync(id);
 
             if (student == null)
                 return NotFound();
 
-            students.Remove(student);
+            _context.Students.Remove(student);
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
