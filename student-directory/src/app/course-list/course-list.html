@@ -1,0 +1,23 @@
+<main class="course-page">
+  <a routerLink="/">Back to students</a>
+  <h1>Courses</h1>
+
+  @if (errorMessage) {
+    <p class="error">{{ errorMessage }}</p>
+  }
+
+  <form (ngSubmit)="addCourse()">
+    <label for="course-name">Course name</label>
+    <input id="course-name" name="courseName" [(ngModel)]="courseName" required>
+    <button type="submit" [disabled]="!courseName.trim()">Add course</button>
+  </form>
+
+  <ul>
+    @for (course of courses; track course.id) {
+      <li>
+        <span>{{ course.name }}</span>
+        <button type="button" (click)="deleteCourse(course.id)">Delete</button>
+      </li>
+    }
+  </ul>
+</main>

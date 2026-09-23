@@ -1,9 +1,11 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { Course } from '../course';
 
 export interface NewStudent {
   name: string;
   score: number;
+  courseId?: string;
 }
 
 @Component({
@@ -15,6 +17,7 @@ export interface NewStudent {
 })
 export class AddStudent {
   @Output() studentAdded = new EventEmitter<NewStudent>();
+  @Input() courses: Course[] = [];
 
   onSubmit() {
     if (this.addStudentForm.invalid) {
@@ -22,10 +25,11 @@ export class AddStudent {
       return;
     }
 
-    const { name, score } = this.addStudentForm.getRawValue();
+    const { name, score, courseId } = this.addStudentForm.getRawValue();
     this.studentAdded.emit({
       name: name.trim(),
       score: Number(score),
+      courseId: courseId || undefined,
     });
     this.addStudentForm.reset();
   }
@@ -44,5 +48,6 @@ export class AddStudent {
         Validators.max(100),
       ],
     }),
+    courseId: new FormControl('', { nonNullable: true }),
   });
 }

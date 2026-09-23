@@ -3,10 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { StudentCard } from '../student-card/student-card';
 import { AddStudent } from '../add-student/add-student';
 import { Student, StudentRecord, StudentRequest } from '../student';
+import { Course, CourseService } from '../course';
+import { RouterLink } from '@angular/router';
 
 
 @Component({
-  imports: [FormsModule, StudentCard, AddStudent],
+  imports: [FormsModule, StudentCard, AddStudent, RouterLink],
   selector: 'app-student-list',
   standalone: true,
   styleUrl: './student-list.css',
@@ -14,18 +16,24 @@ import { Student, StudentRecord, StudentRequest } from '../student';
 })
 export class StudentList {
   students: StudentRecord[] = [];
-  favoriteIds: string[] = [];
+  courses: Course[] = [];
 
   showDetails = false;
   showAddStudent = false;
   searchTerm = '';
   showOnlyFavorites = false;
+  selectedCourseId = '';
+  sortBy = 'name';
+  sortDirection = 'asc';
+  minScore: number | undefined;
+  maxScore: number | undefined;
 
   private cdr = inject(ChangeDetectorRef);
   loading:boolean = false;
   errorMessage:String = "";
 
-  constructor(private studentService: Student) {
+  constructor(private studentService: Student, private courseService: CourseService) {
+    this.courseService.getCourses().subscribe({ next: (data) => this.courses = data });
     this.studentService.getStudents().subscribe({
       next: (data) => { 
         this.students = data; 
@@ -33,7 +41,7 @@ export class StudentList {
         this.cdr.markForCheck();},
       error: () => { 
         this.errorMessage = "Could not load students."; 
-        this.cdr.markForCheck();}
+        this.cdr.markForCheck(); }
     });
   }
 
@@ -59,13 +67,18 @@ export class StudentList {
   }
 
   toggleFavorite(id: string) {
-    if (this.favoriteIds.includes(id)) {
-      this.favoriteIds = this.favoriteIds.filter(
-        favoriteId => favoriteId !== id
-      );
-    } else {
-      this.favoriteIds = [...this.favoriteIds, id];
-    }
+    const student = this.students.find(item => item.id === id);
+    if (!student) return;
+
+    this.studentService.updateFavorite(id, !student.isFav).subscribe({
+      next: (updatedStudent) => {
+        this.students = this.students.map(item => item.id === id ? updatedStudent : item);
+      },
+      error: (error) => {
+        this.errorMessage = 'Could not update favourite.';
+        console.error(error);
+      }
+    });
   }
 
   deleteStudent(id: string) {
@@ -87,10 +100,18 @@ export class StudentList {
 
     return this.students.filter((student) => {
       const matchesSearch = student.name.toLowerCase().includes(search);
+      const matchesCourse = !this.selectedCourseId || student.courseId === this.selectedCourseId;
+      const matchesScore = (this.minScore === undefined || student.score >= this.minScore)
+        && (this.maxScore === undefined || student.score <= this.maxScore);
       const matchesFavorite =
-        !this.showOnlyFavorites || this.favoriteIds.includes(student.id);
+        !this.showOnlyFavorites || student.isFav;
 
-      return matchesSearch && matchesFavorite;
+      return matchesSearch && matchesCourse && matchesScore && matchesFavorite;
+    }).sort((left, right) => {
+      const leftValue = this.sortBy === 'score' ? left.score : this.sortBy === 'course' ? (left.courseName ?? '') : left.name;
+      const rightValue = this.sortBy === 'score' ? right.score : this.sortBy === 'course' ? (right.courseName ?? '') : right.name;
+      const comparison = typeof leftValue === 'number' ? leftValue - (rightValue as number) : String(leftValue).localeCompare(String(rightValue));
+      return this.sortDirection === 'desc' ? -comparison : comparison;
     });
   }
 }
