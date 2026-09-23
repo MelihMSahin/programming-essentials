@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 public class Student
 {
@@ -25,6 +26,15 @@ namespace StudentApi.Controllers
     [Route("api/[controller]")]
     public class StudentsController : ControllerBase
     {
+        private readonly ILogger<StudentsController> _logger;
+        private readonly AppDbContext _context;
+
+        public StudentsController(ILogger<StudentsController> logger, AppDbContext context)
+        {
+            _logger = logger;
+            _context = context;
+        }
+
         private static readonly Random random = new();
 
         private static readonly List<Student> students = new();
@@ -51,21 +61,21 @@ namespace StudentApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Student>> GetAll()
+        public async Task<ActionResult<List<Student>>> GetAll()
         {
+            var students = await _context.Students.ToListAsync();
             return Ok(students);
         }
 
+         
         [HttpGet("{id}")]
-        public ActionResult<Student> GetById(string id)
+        public async Task<ActionResult<Student>> GetById(string id)
         {
-            var student = students.FirstOrDefault(s => s.Id == id);
-
-            if (student == null) 
-                return NotFound();
-
+            var student = await _context.Students.FindAsync(id);
+            if (student == null) return NotFound();
             return Ok(student);
         }
+ 
 
         [HttpPost]
         public ActionResult<Student> Create(StudentDto request)
